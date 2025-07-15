@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Results Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .login-section {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .login-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            display: none;
+            padding: 40px;
+        }
+
+        .student-info {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+
+        .info-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-item h4 {
+            color: #4f46e5;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item p {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .grades-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 30px;
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border-radius: 2px;
+        }
+
+        .grades-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .grades-table th,
+        .grades-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .grades-table th {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .grades-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .grade-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .grade-a { background: #dcfce7; color: #166534; }
+        .grade-b { background: #dbeafe; color: #1e40af; }
+        .grade-c { background: #fef3c7; color: #92400e; }
+        .grade-d { background: #fed7d7; color: #c53030; }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .summary-card h3 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .summary-card p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .back-btn {
+            background: #6b7280;
+            margin-top: 30px;
+            width: auto;
+            padding: 12px 24px;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .grades-table {
+                font-size: 14px;
+            }
+
+            .grades-table th,
+            .grades-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+<script>
+    async function getResultsFromSheet(rollNumber) {
+        try {
+            const response = await fetch("https://script.google.com/macros/s/AKfycbx2WVC0Skb9B64tJoJwtNShQRWcvXBmFJtGBAC_VmfwQNx2pY5YFlYMBx7hVPeTFFXF/exec");
+            const data = await response.json();
+            return data.find(student => student["Roll No"] === rollNumber);
+        } catch (error) {
+            console.error("Error fetching results:", error);
+            return null;
+        }
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const rollNumber = document.getElementById('rollNumber').value.trim().toUpperCase();
+
+        const student = await getResultsFromSheet(rollNumber);
+
+        if (student) {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+
+            document.getElementById('studentName').textContent = student.Name;
+            document.getElementById('displayStudentId').textContent = student["Roll No"];
+            document.getElementById('year').textContent = "-";
+            document.getElementById('program').textContent = "-";
+            document.getElementById('currentSemester').textContent = "2024-25";
+            document.getElementById('status').textContent = student.Result;
+
+            const tbody = document.getElementById('gradesTableBody');
+            tbody.innerHTML = `
+                <tr><td>PHY</td><td>Physics</td><td>100</td><td>${student.Physics}</td><td>-</td><td>${student.Physics >= 35 ? 'Pass' : 'Fail'}</td></tr>
+                <tr><td>CHE</td><td>Chemistry</td><td>100</td><td>${student.Chemistry}</td><td>-</td><td>${student.Chemistry >= 35 ? 'Pass' : 'Fail'}</td></tr>
+                <tr><td>MAT</td><td>Mathematics</td><td>100</td><td>${student.Maths}</td><td>-</td><td>${student.Maths >= 35 ? 'Pass' : 'Fail'}</td></tr>
+                <tr><td>ENG</td><td>English</td><td>100</td><td>${student.English}</td><td>-</td><td>${student.English >= 35 ? 'Pass' : 'Fail'}</td></tr>
+            `;
+
+            document.getElementById('totalMarks').textContent = 400;
+            document.getElementById('obtainedMarks').textContent = student.Total;
+            document.getElementById('percentage').textContent = ((student.Total / 400) * 100).toFixed(1) + '%';
+            document.getElementById('result').textContent = student.Result;
+        } else {
+            alert("No result found for this Roll Number.");
+        }
+    });
+</script>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MILLENNIUM COMPOSITE PU COLLEGE , KALABURGI</h1>
+            <p>Pre-University Student Results Portal</p>
+            <div style="margin-top: 15px; font-size: 14px; opacity: 0.9;">
+                Karnataka State Board • Science & Commerce 
+            </div>
+        </div>
+
+        <div class="login-section" id="loginSection">
+            <h2 style="margin-bottom: 30px; color: #1f2937;">PU Student Login</h2>
+            <form class="login-form" id="loginForm">
+                <div class="form-group">
+                    <label for="rollNumber">Roll Number</label>
+                    <input type="text" id="rollNumber" placeholder="Enter your roll number" required>
+                </div>
+                <div class="form-group">
+                    <label for="course">Select Course</label>
+                    <select id="course" required>
+                        <option value="">Choose course...</option>
+                        <option value="1st_pu">1st PU</option>
+                        <option value="2nd_pu">2nd PU</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="stream">Select Stream</label>
+                    <select id="stream" required>
+                        <option value="">Choose stream...</option>
+                        <option value="science">Science (PCMB/PCMCs)</option>
+                        <option value="commerce">Commerce (CEBA)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">View Results</button>
+            </form>
+        </div>
+
+        <div class="results-section" id="resultsSection">
+            <div class="student-info">
+                <h2 class="section-title">Student Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <h4>Student Name</h4>
+                        <p id="studentName">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Roll Number</h4>
+                        <p id="displayStudentId">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Course</h4>
+                        <p id="year">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Stream</h4>
+                        <p id="program">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Academic Year</h4>
+                        <p id="currentSemester">-</p>
+                    </div>
+                    <div class="info-item">
+                        <h4>Status</h4>
+                        <p id="status">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grades-section">
+                <h2 class="section-title">Academic Results</h2>
+                <table class="grades-table">
+                    <thead>
+                        <tr>
+                            <th>Subject Code</th>
+                            <th>Subject Name</th>
+                            <th>Max Marks</th>
+                            <th>Marks Obtained</th>
+                            <th>Grade</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gradesTableBody">
+                        <!-- Grades will be populated here -->
+                    </tbody>
+                </table>
+
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3 id="totalMarks">0</h3>
+                        <p>Total Marks</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3 id="obtainedMarks">0</h3>
+                        <p>Marks Obtained</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3 id="percentage">0%</h3>
+                        <p>Percentage</p>
+                    </div>
+                    <div class="summary-card">
+                        <h3 id="result">-</h3>
+                        <p>Overall Result</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn back-btn" onclick="showLogin()">Back to Login</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample PU student data - organized by course and stream
+        const studentData = {
+            // 1st PU Science Students
+            'R001': {
+                name: 'Arjun Kumar',
+                course: '1st PU',
+                stream: 'Science (PCMB)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'PHY', name: 'Physics', maxMarks: 100, obtained: 85, grade: 'A1' },
+                    { code: 'CHE', name: 'Chemistry', maxMarks: 100, obtained: 78, grade: 'A2' },
+                    { code: 'MAT', name: 'Mathematics', maxMarks: 100, obtained: 92, grade: 'A1' },
+                    { code: 'BIO', name: 'Biology', maxMarks: 100, obtained: 88, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 75, grade: 'A2' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 80, grade: 'A1' }
+                ]
+            },
+            'R002': {
+                name: 'Priya Reddy',
+                course: '1st PU',
+                stream: 'Science (PCMC)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'PHY', name: 'Physics', maxMarks: 100, obtained: 82, grade: 'A1' },
+                    { code: 'CHE', name: 'Chemistry', maxMarks: 100, obtained: 86, grade: 'A1' },
+                    { code: 'MAT', name: 'Mathematics', maxMarks: 100, obtained: 90, grade: 'A1' },
+                    { code: 'CS', name: 'Computer Science', maxMarks: 100, obtained: 94, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 77, grade: 'A2' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 79, grade: 'A2' }
+                ]
+            },
+            // 1st PU Commerce Students
+            'R003': {
+                name: 'Rajesh Gowda',
+                course: '1st PU',
+                stream: 'Commerce (ABEM)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'ACC', name: 'Accountancy', maxMarks: 100, obtained: 90, grade: 'A1' },
+                    { code: 'BUS', name: 'Business Studies', maxMarks: 100, obtained: 85, grade: 'A1' },
+                    { code: 'ECO', name: 'Economics', maxMarks: 100, obtained: 82, grade: 'A1' },
+                    { code: 'MAT', name: 'Mathematics', maxMarks: 100, obtained: 88, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 77, grade: 'A2' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 79, grade: 'A2' }
+                ]
+            },
+            'R004': {
+                name: 'Sneha Patil',
+                course: '1st PU',
+                stream: 'Commerce (ABST)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'ACC', name: 'Accountancy', maxMarks: 100, obtained: 87, grade: 'A1' },
+                    { code: 'BUS', name: 'Business Studies', maxMarks: 100, obtained: 83, grade: 'A1' },
+                    { code: 'STAT', name: 'Statistics', maxMarks: 100, obtained: 91, grade: 'A1' },
+                    { code: 'ECO', name: 'Economics', maxMarks: 100, obtained: 85, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 78, grade: 'A2' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 81, grade: 'A1' }
+                ]
+            },
+            // 2nd PU Science Students
+            'R005': {
+                name: 'Kiran Shetty',
+                course: '2nd PU',
+                stream: 'Science (PCMB)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'PHY', name: 'Physics', maxMarks: 100, obtained: 88, grade: 'A1' },
+                    { code: 'CHE', name: 'Chemistry', maxMarks: 100, obtained: 84, grade: 'A1' },
+                    { code: 'MAT', name: 'Mathematics', maxMarks: 100, obtained: 95, grade: 'A1' },
+                    { code: 'BIO', name: 'Biology', maxMarks: 100, obtained: 90, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 76, grade: 'A2' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 82, grade: 'A1' }
+                ]
+            },
+            'R006': {
+                name: 'Anita Nair',
+                course: '2nd PU',
+                stream: 'Science (PCMC)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'PHY', name: 'Physics', maxMarks: 100, obtained: 89, grade: 'A1' },
+                    { code: 'CHE', name: 'Chemistry', maxMarks: 100, obtained: 92, grade: 'A1' },
+                    { code: 'MAT', name: 'Mathematics', maxMarks: 100, obtained: 87, grade: 'A1' },
+                    { code: 'CS', name: 'Computer Science', maxMarks: 100, obtained: 96, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 80, grade: 'A1' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 83, grade: 'A1' }
+                ]
+            },
+            // 2nd PU Commerce Students
+            'R007': {
+                name: 'Suresh Kumar',
+                course: '2nd PU',
+                stream: 'Commerce (ABEM)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'ACC', name: 'Accountancy', maxMarks: 100, obtained: 93, grade: 'A1' },
+                    { code: 'BUS', name: 'Business Studies', maxMarks: 100, obtained: 88, grade: 'A1' },
+                    { code: 'ECO', name: 'Economics', maxMarks: 100, obtained: 85, grade: 'A1' },
+                    { code: 'MAT', name: 'Mathematics', maxMarks: 100, obtained: 91, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 79, grade: 'A2' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 84, grade: 'A1' }
+                ]
+            },
+            'R008': {
+                name: 'Deepika Rao',
+                course: '2nd PU',
+                stream: 'Commerce (ABST)',
+                status: 'Regular',
+                subjects: [
+                    { code: 'ACC', name: 'Accountancy', maxMarks: 100, obtained: 91, grade: 'A1' },
+                    { code: 'BUS', name: 'Business Studies', maxMarks: 100, obtained: 86, grade: 'A1' },
+                    { code: 'STAT', name: 'Statistics', maxMarks: 100, obtained: 94, grade: 'A1' },
+                    { code: 'ECO', name: 'Economics', maxMarks: 100, obtained: 88, grade: 'A1' },
+                    { code: 'ENG', name: 'English', maxMarks: 100, obtained: 81, grade: 'A1' },
+                    { code: 'KAN', name: 'Kannada', maxMarks: 100, obtained: 85, grade: 'A1' }
+                ]
+            }
+        };
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const rollNumber = document.getElementById('rollNumber').value;
+            const course = document.getElementById('course').value;
+            const stream = document.getElementById('stream').value;
+            
+            // Check if student data exists for the given roll number
+            if (studentData[rollNumber]) {
+                const student = studentData[rollNumber];
+                
+                // Validate course and stream match
+                const selectedCourse = course === '1st_pu' ? '1st PU' : '2nd PU';
+                const selectedStream = stream === 'science' ? 'Science' : 'Commerce';
+                
+                if (student.course === selectedCourse && student.stream.includes(selectedStream)) {
+                    showResults(rollNumber, course, stream);
+                } else {
+                    alert('Selected course and stream do not match your enrollment. Please check your selection.');
+                }
+            } else {
+                alert('Invalid roll number. Try R001 to R008 for demo.');
+            }
+        });
+
+        function showResults(rollNumber, course, stream) {
+            const student = studentData[rollNumber];
+            
+            // Hide login, show results
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Populate student info
+            document.getElementById('studentName').textContent = student.name;
+            document.getElementById('displayStudentId').textContent = rollNumber;
+            document.getElementById('year').textContent = student.course;
+            document.getElementById('program').textContent = student.stream;
+            document.getElementById('currentSemester').textContent = '2024-25';
+            document.getElementById('status').textContent = student.status;
+            
+            // Populate results table
+            const tbody = document.getElementById('gradesTableBody');
+            tbody.innerHTML = '';
+            
+            let totalMarks = 0;
+            let obtainedMarks = 0;
+            let passCount = 0;
+            
+            student.subjects.forEach(subject => {
+                const row = tbody.insertRow();
+                const result = subject.obtained >= 35 ? 'Pass' : 'Fail';
+                const resultColor = subject.obtained >= 35 ? '#059669' : '#dc2626';
+                
+                row.innerHTML = `
+                    <td><strong>${subject.code}</strong></td>
+                    <td>${subject.name}</td>
+                    <td>${subject.maxMarks}</td>
+                    <td><strong>${subject.obtained}</strong></td>
+                    <td><span class="grade-badge grade-${subject.grade.toLowerCase().replace(/[0-9]/g, '')}">${subject.grade}</span></td>
+                    <td><span style="color: ${resultColor}; font-weight: 600;">${result}</span></td>
+                `;
+                
+                totalMarks += subject.maxMarks;
+                obtainedMarks += subject.obtained;
+                if (subject.obtained >= 35) passCount++;
+            });
+            
+            // Calculate and display summary
+            const percentage = ((obtainedMarks / totalMarks) * 100).toFixed(1);
+            const overallResult = passCount === student.subjects.length ? 'PASS' : 'FAIL';
+            
+            document.getElementById('totalMarks').textContent = totalMarks;
+            document.getElementById('obtainedMarks').textContent = obtainedMarks;
+            document.getElementById('percentage').textContent = percentage + '%';
+            document.getElementById('result').textContent = overallResult;
+            
+            // Update result card color based on pass/fail
+            const resultCard = document.getElementById('result').parentElement;
+            if (overallResult === 'PASS') {
+                resultCard.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+            } else {
+                resultCard.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+            }
+        }
+
+        function showLogin() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+    </script>
+</body>
+</html>
