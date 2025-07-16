@@ -3,240 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Results Portal</title>
+    <title>PU College - Result Portal</title>
     <style>
-        /* ... [Your CSS stays unchanged] ... */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .floating-shapes {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+        .shape:nth-child(2) { width: 120px; height: 120px; top: 60%; left: 80%; animation-delay: 2s; }
+        .shape:nth-child(3) { width: 60px; height: 60px; top: 80%; left: 30%; animation-delay: 4s; }
+        .shape:nth-child(4) { width: 100px; height: 100px; top: 30%; left: 70%; animation-delay: 1s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1em;
+        }
+
+        .search-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .search-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: end;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .search-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-btn:active {
+            transform: translateY(0);
+        }
+
+        .result-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            display: none;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .result-header h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .student-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 20px;
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .info-card h3 {
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-card p {
+            color: #333;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .results-table th, .results-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .results-table th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .results-table tr:hover {
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .grade {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .grade.A { background: #d4edda; color: #155724; }
+        .grade.B { background: #cce5ff; color: #004085; }
+        .grade.C { background: #fff3cd; color: #856404; }
+        .grade.D { background: #f8d7da; color: #721c24; }
+        .grade.F { background: #f5c6cb; color: #721c24; }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #f5c6cb;
+            display: none;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .student-info {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="background-animation">
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="header">
-            <h1>MILLENNIUM COMPOSITE PU COLLEGE , KALABURGI</h1>
-            <p>Pre-University Student Results Portal</p>
-            <div style="margin-top: 15px; font-size: 14px; opacity: 0.9;">
-                Karnataka State Board • Science & Commerce 
-            </div>
+            <h1>PU College Result Portal</h1>
+            <p>Check your examination results instantly</p>
         </div>
 
-        <div class="login-section" id="loginSection">
-            <h2 style="margin-bottom: 30px; color: #1f2937;">PU Student Login</h2>
-            <form class="login-form" id="loginForm">
+        <div class="search-section">
+            <div class="search-form">
                 <div class="form-group">
                     <label for="rollNumber">Roll Number</label>
                     <input type="text" id="rollNumber" placeholder="Enter your roll number" required>
                 </div>
                 <div class="form-group">
-                    <label for="course">Select Course</label>
-                    <select id="course" required>
-                        <option value="">Choose course...</option>
-                        <option value="1st_pu">1st PU</option>
-                        <option value="2nd_pu">2nd PU</option>
+                    <label for="puLevel">PU Level</label>
+                    <select id="puLevel" required>
+                        <option value="">Select PU Level</option>
+                        <option value="PU1">PU1</option>
+                        <option value="PU2">PU2</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="stream">Select Stream</label>
-                    <select id="stream" required>
-                        <option value="">Choose stream...</option>
-                        <option value="science">Science (PCMB/PCMCs)</option>
-                        <option value="commerce">Commerce (CEBA)</option>
+                    <label for="course">Course</label>
+                    <select id="course" required>
+                        <option value="">Select Course</option>
+                        <option value="Science">Science</option>
+                        <option value="Commerce">Commerce</option>
                     </select>
                 </div>
-                <button type="submit" class="btn">View Results</button>
-            </form>
+                <div class="form-group">
+                    <label for="examType">Exam Type</label>
+                    <select id="examType" required>
+                        <option value="">Select Exam</option>
+                        <option value="midterm">Mid-Term</option>
+                        <option value="final">Final Exam</option>
+                    </select>
+                </div>
+                <button class="search-btn" onclick="searchResult()">Get Result</button>
+            </div>
         </div>
 
-        <div class="results-section" id="resultsSection" style="display:none;">
-            <div class="student-info">
-                <h2 class="section-title">Student Information</h2>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <h4>Student Name</h4>
-                        <p id="studentName">-</p>
-                    </div>
-                    <div class="info-item">
-                        <h4>Roll Number</h4>
-                        <p id="displayStudentId">-</p>
-                    </div>
-                    <div class="info-item">
-                        <h4>Course</h4>
-                        <p id="year">-</p>
-                    </div>
-                    <div class="info-item">
-                        <h4>Stream</h4>
-                        <p id="program">-</p>
-                    </div>
-                    <div class="info-item">
-                        <h4>Academic Year</h4>
-                        <p id="currentSemester">-</p>
-                    </div>
-                    <div class="info-item">
-                        <h4>Status</h4>
-                        <p id="status">-</p>
-                    </div>
-                </div>
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Fetching your result...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <div class="result-section" id="resultSection">
+            <div class="result-header">
+                <h2>Examination Result</h2>
+                <p>Academic Year 2024-25</p>
             </div>
 
-            <div class="grades-section">
-                <h2 class="section-title">Academic Results</h2>
-                <table class="grades-table">
-                    <thead>
-                        <tr>
-                            <th>Subject Code</th>
-                            <th>Subject Name</th>
-                            <th>Max Marks</th>
-                            <th>Marks Obtained</th>
-                            <th>Grade</th>
-                            <th>Result</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gradesTableBody">
-                        <!-- Grades will be populated here -->
-                    </tbody>
-                </table>
-
-                <div class="summary-cards">
-                    <div class="summary-card">
-                        <h3 id="totalMarks">0</h3>
-                        <p>Total Marks</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3 id="obtainedMarks">0</h3>
-                        <p>Marks Obtained</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3 id="percentage">0%</h3>
-                        <p>Percentage</p>
-                    </div>
-                    <div class="summary-card">
-                        <h3 id="result">-</h3>
-                        <p>Overall Result</p>
-                    </div>
-                </div>
+            <div class="student-info" id="studentInfo">
+                <!-- Student information will be populated here -->
             </div>
 
-            <button class="btn back-btn" onclick="showLogin()">Back to Login</button>
+            <table class="results-table" id="resultsTable">
+                <thead>
+                    <tr>
+                        <th>Subject Code</th>
+                        <th>Subject Name</th>
+                        <th>Internal Marks</th>
+                        <th>External Marks</th>
+                        <th>Total Marks</th>
+                        <th>Grade</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                    <!-- Results will be populated here -->
+                </tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        async function getResultsFromSheet(rollNumber) {
+        // Sample data - In real implementation, this would come from Google Sheets
+        const sampleData = {
+            "12345": {
+                name: "Rajesh Kumar",
+                rollNumber: "12345",
+                puLevel: "PU1",
+                course: "Science",
+                combination: "PCMB",
+                examType: "final",
+                section: "A",
+                subjects: [
+                    { code: "PHY", name: "Physics", internal: 18, external: 65, total: 83, grade: "A", result: "Pass" },
+                    { code: "CHEM", name: "Chemistry", internal: 16, external: 58, total: 74, grade: "B", result: "Pass" },
+                    { code: "MATH", name: "Mathematics", internal: 19, external: 72, total: 91, grade: "A", result: "Pass" },
+                    { code: "BIO", name: "Biology", internal: 17, external: 61, total: 78, grade: "B", result: "Pass" },
+                    { code: "ENG", name: "English", internal: 20, external: 68, total: 88, grade: "A", result: "Pass" },
+                    { code: "KAN", name: "Kannada", internal: 18, external: 70, total: 88, grade: "A", result: "Pass" }
+                ]
+            },
+            "67890": {
+                name: "Priya Sharma",
+                rollNumber: "67890",
+                puLevel: "PU2",
+                course: "Commerce",
+                combination: "CEBA",
+                examType: "midterm",
+                section: "B",
+                subjects: [
+                    { code: "COM", name: "Commerce", internal: 17, external: 62, total: 79, grade: "B", result: "Pass" },
+                    { code: "ECON", name: "Economics", internal: 18, external: 70, total: 88, grade: "A", result: "Pass" },
+                    { code: "BUS", name: "Business Studies", internal: 19, external: 73, total: 92, grade: "A", result: "Pass" },
+                    { code: "ACC", name: "Accountancy", internal: 15, external: 55, total: 70, grade: "B", result: "Pass" },
+                    { code: "ENG", name: "English", internal: 20, external: 75, total: 95, grade: "A", result: "Pass" },
+                    { code: "KAN", name: "Kannada", internal: 18, external: 68, total: 86, grade: "A", result: "Pass" }
+                ]
+            },
+            "11111": {
+                name: "Arun Patel",
+                rollNumber: "11111",
+                puLevel: "PU1",
+                course: "Science",
+                combination: "PCMC",
+                examType: "final",
+                section: "A",
+                subjects: [
+                    { code: "PHY", name: "Physics", internal: 19, external: 68, total: 87, grade: "A", result: "Pass" },
+                    { code: "CHEM", name: "Chemistry", internal: 17, external: 62, total: 79, grade: "B", result: "Pass" },
+                    { code: "MATH", name: "Mathematics", internal: 20, external: 78, total: 98, grade: "A", result: "Pass" },
+                    { code: "CS", name: "Computer Science", internal: 18, external: 72, total: 90, grade: "A", result: "Pass" },
+                    { code: "ENG", name: "English", internal: 19, external: 71, total: 90, grade: "A", result: "Pass" },
+                    { code: "KAN", name: "Kannada", internal: 17, external: 65, total: 82, grade: "A", result: "Pass" }
+                ]
+            }
+        };
+
+        // Google Sheets API configuration
+        const GOOGLE_SHEETS_API_KEY = 'YOUR_API_KEY_HERE';
+        const SPREADSHEET_ID = 'YOUR_SPREADSHEET_ID_HERE';
+        const SHEET_NAME = 'Results';
+
+        async function fetchFromGoogleSheets(rollNumber, puLevel, course, examType) {
             try {
-                const response = await fetch("https://script.google.com/macros/s/AKfycbx2WVC0Skb9B64tJoJwtNShQRWcvXBmFJtGBAC_VmfwQNx2pY5YFlYMBx7hVPeTFFXF/exec");
+                // This is a placeholder for Google Sheets API integration
+                // Replace with actual API call
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!A:Z?key=${GOOGLE_SHEETS_API_KEY}`;
+                
+                // For demo purposes, we'll use sample data
+                // In real implementation, uncomment the following lines:
+                /*
+                const response = await fetch(url);
                 const data = await response.json();
-                return data.find(student => student["Roll No"].toUpperCase() === rollNumber);
+                
+                // Process the data to find matching student
+                const rows = data.values;
+                const student = rows.find(row => 
+                    row[0] === rollNumber && 
+                    row[1] === puLevel && 
+                    row[2] === course &&
+                    row[3] === examType
+                );
+                
+                if (!student) {
+                    throw new Error('Student not found');
+                }
+                
+                return processGoogleSheetsData(student);
+                */
+                
+                // Demo: simulate API delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // Return sample data for demo
+                const student = sampleData[rollNumber];
+                if (!student || student.puLevel !== puLevel || student.course !== course || student.examType !== examType) {
+                    throw new Error('No result found for the given criteria');
+                }
+                return student;
+                
             } catch (error) {
-                console.error("Error fetching results:", error);
-                return null;
+                throw new Error('Failed to fetch result: ' + error.message);
             }
         }
 
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const rollNumber = document.getElementById('rollNumber').value.trim().toUpperCase();
+        async function searchResult() {
+            const rollNumber = document.getElementById('rollNumber').value.trim();
+            const puLevel = document.getElementById('puLevel').value;
             const course = document.getElementById('course').value;
-            const stream = document.getElementById('stream').value;
+            const examType = document.getElementById('examType').value;
 
-            // Fetch and match student
-            const student = await getResultsFromSheet(rollNumber);
+            // Validation
+            if (!rollNumber || !puLevel || !course || !examType) {
+                showError('Please fill in all required fields');
+                return;
+            }
 
-            if (student) {
-                // Optional: If your sheet has these fields, validate them
-                // if (student.Course !== course || student.Stream !== stream) {
-                //     alert("Selected course and stream do not match your enrollment. Please check your selection.");
-                //     return;
-                // }
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('resultSection').style.display = 'none';
+            hideMessages();
 
-                document.getElementById('loginSection').style.display = 'none';
-                document.getElementById('resultsSection').style.display = 'block';
+            try {
+                const studentData = await fetchFromGoogleSheets(rollNumber, puLevel, course, examType);
+                displayResult(studentData);
+                showSuccess('Result fetched successfully!');
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
 
-                document.getElementById('studentName').textContent = student.Name || "-";
-                document.getElementById('displayStudentId').textContent = student["Roll No"] || "-";
-                document.getElementById('year').textContent = student.Course || "-";
-                document.getElementById('program').textContent = student.Stream || "-";
-                document.getElementById('currentSemester').textContent = student["Academic Year"] || "2024-25";
-                document.getElementById('status').textContent = student.Result || "-";
+        function displayResult(studentData) {
+            // Populate student information
+            const studentInfo = document.getElementById('studentInfo');
+            studentInfo.innerHTML = `
+                <div class="info-card">
+                    <h3>Student Name</h3>
+                    <p>${studentData.name}</p>
+                </div>
+                <div class="info-card">
+                    <h3>Roll Number</h3>
+                    <p>${studentData.rollNumber}</p>
+                </div>
+                <div class="info-card">
+                    <h3>Course</h3>
+                    <p>${studentData.course}</p>
+                </div>
+                <div class="info-card">
+                    <h3>Combination</h3>
+                    <p>${studentData.combination}</p>
+                </div>
+                <div class="info-card">
+                    <h3>PU Level</h3>
+                    <p>${studentData.puLevel}</p>
+                </div>
+                <div class="info-card">
+                    <h3>Section</h3>
+                    <p>${studentData.section}</p>
+                </div>
+                <div class="info-card">
+                    <h3>Exam Type</h3>
+                    <p>${studentData.examType.charAt(0).toUpperCase() + studentData.examType.slice(1)} Exam</p>
+                </div>
+            `;
 
-                // Subjects and marks
-                // Adjust keys as per your Sheet's column headers
-                const subjects = [
-                    { code: "PHY", name: "Physics", markKey: "Physics" },
-                    { code: "CHE", name: "Chemistry", markKey: "Chemistry" },
-                    { code: "MAT", name: "Mathematics", markKey: "Maths" },
-                    { code: "BIO", name: "Biology", markKey: "Biology" },
-                    { code: "CS", name: "Computer Science", markKey: "Computer Science" },
-                    { code: "ENG", name: "English", markKey: "English" },
-                    { code: "KAN", name: "Kannada", markKey: "Kannada" },
-                    { code: "ACC", name: "Accountancy", markKey: "Accountancy" },
-                    { code: "BUS", name: "Business Studies", markKey: "Business Studies" },
-                    { code: "STAT", name: "Statistics", markKey: "Statistics" },
-                    { code: "ECO", name: "Economics", markKey: "Economics" }
-                ];
+            // Populate results table
+            const tableBody = document.getElementById('resultsTableBody');
+            tableBody.innerHTML = '';
+            
+            studentData.subjects.forEach(subject => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subject.code}</td>
+                    <td>${subject.name}</td>
+                    <td>${subject.internal}</td>
+                    <td>${subject.external}</td>
+                    <td><strong>${subject.total}</strong></td>
+                    <td><span class="grade ${subject.grade}">${subject.grade}</span></td>
+                    <td><strong>${subject.result}</strong></td>
+                `;
+                tableBody.appendChild(row);
+            });
 
-                let tbody = document.getElementById('gradesTableBody');
-                tbody.innerHTML = '';
-                let totalMarks = 0;
-                let obtainedMarks = 0;
-                let subjectsCount = 0;
-                let passCount = 0;
+            // Show result section
+            document.getElementById('resultSection').style.display = 'block';
+        }
 
-                subjects.forEach(subj => {
-                    if (student[subj.markKey] !== undefined && student[subj.markKey] !== "") {
-                        const marks = Number(student[subj.markKey]);
-                        const maxMarks = 100;
-                        const result = marks >= 35 ? "Pass" : "Fail";
-                        const resultColor = marks >= 35 ? "#059669" : "#dc2626";
-                        // Simple grade logic, adjust as needed
-                        let grade = "-";
-                        if (marks >= 90) grade = "A1";
-                        else if (marks >= 80) grade = "A2";
-                        else if (marks >= 70) grade = "B1";
-                        else if (marks >= 60) grade = "B2";
-                        else if (marks >= 50) grade = "C1";
-                        else if (marks >= 35) grade = "C2";
-                        else grade = "D";
+        function getOrdinalSuffix(num) {
+            const suffixes = ['th', 'st', 'nd', 'rd'];
+            const v = num % 100;
+            return suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0];
+        }
 
-                        tbody.innerHTML += `
-                            <tr>
-                                <td>${subj.code}</td>
-                                <td>${subj.name}</td>
-                                <td>${maxMarks}</td>
-                                <td>${marks}</td>
-                                <td><span class="grade-badge grade-${grade.toLowerCase()}">${grade}</span></td>
-                                <td><span style="color:${resultColor};font-weight:600;">${result}</span></td>
-                            </tr>
-                        `;
-                        totalMarks += maxMarks;
-                        obtainedMarks += marks;
-                        subjectsCount++;
-                        if (marks >= 35) passCount++;
-                    }
-                });
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
 
-                // If your sheet has total/percentage/result, use them, else calculate here
-                document.getElementById('totalMarks').textContent = totalMarks;
-                document.getElementById('obtainedMarks').textContent = obtainedMarks;
-                document.getElementById('percentage').textContent = totalMarks ? ((obtainedMarks / totalMarks) * 100).toFixed(1) + '%' : "-";
-                const overallResult = passCount === subjectsCount && subjectsCount > 0 ? "PASS" : "FAIL";
-                document.getElementById('result').textContent = overallResult;
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
 
-                // Update result card color
-                const resultCard = document.getElementById('result').parentElement;
-                if (overallResult === 'PASS') {
-                    resultCard.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
-                } else {
-                    resultCard.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
-                }
+        function hideMessages() {
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+        }
 
-            } else {
-                alert("No result found for this Roll Number.");
+        // Add enter key support for search
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchResult();
             }
         });
-
-        function showLogin() {
-            document.getElementById('loginSection').style.display = 'block';
-            document.getElementById('resultsSection').style.display = 'none';
-            document.getElementById('loginForm').reset();
-        }
     </script>
 </body>
 </html>
