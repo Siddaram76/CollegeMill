@@ -443,60 +443,7 @@
         const SPREADSHEET_ID = '1hpA0y0SLQwBrGYOBXrZAqZFhzzl-MpuQerbme1Isa4M';
         const SHEET_NAME = 'Results';
 
-        // Sample data for testing - Remove this when using real Google Sheets
-        const sampleData = {
-            "12345": {
-                name: "Rajesh Kumar",
-                rollNumber: "12345",
-                puLevel: "PU1",
-                course: "Science",
-                combination: "PCMB",
-                examType: "final",
-                section: "A",
-                subjects: [
-                    { code: "PHY", name: "Physics", internal: 18, external: 65, total: 83, grade: "A", result: "Pass" },
-                    { code: "CHEM", name: "Chemistry", internal: 16, external: 58, total: 74, grade: "B", result: "Pass" },
-                    { code: "MATH", name: "Mathematics", internal: 19, external: 72, total: 91, grade: "A", result: "Pass" },
-                    { code: "BIO", name: "Biology", internal: 17, external: 61, total: 78, grade: "B", result: "Pass" },
-                    { code: "ENG", name: "English", internal: 20, external: 68, total: 88, grade: "A", result: "Pass" },
-                    { code: "KAN", name: "Kannada", internal: 18, external: 70, total: 88, grade: "A", result: "Pass" }
-                ]
-            },
-            "67890": {
-                name: "Priya Sharma",
-                rollNumber: "67890",
-                puLevel: "PU2",
-                course: "Commerce",
-                combination: "CEBA",
-                examType: "midterm",
-                section: "B",
-                subjects: [
-                    { code: "COM", name: "Commerce", internal: 17, external: 62, total: 79, grade: "B", result: "Pass" },
-                    { code: "ECON", name: "Economics", internal: 18, external: 70, total: 88, grade: "A", result: "Pass" },
-                    { code: "BUS", name: "Business Studies", internal: 19, external: 73, total: 92, grade: "A", result: "Pass" },
-                    { code: "ACC", name: "Accountancy", internal: 15, external: 55, total: 70, grade: "B", result: "Pass" },
-                    { code: "ENG", name: "English", internal: 20, external: 75, total: 95, grade: "A", result: "Pass" },
-                    { code: "KAN", name: "Kannada", internal: 18, external: 68, total: 86, grade: "A", result: "Pass" }
-                ]
-            },
-            "11111": {
-                name: "Arun Patel",
-                rollNumber: "11111",
-                puLevel: "PU1",
-                course: "Science",
-                combination: "PCMC",
-                examType: "final",
-                section: "A",
-                subjects: [
-                    { code: "PHY", name: "Physics", internal: 19, external: 68, total: 87, grade: "A", result: "Pass" },
-                    { code: "CHEM", name: "Chemistry", internal: 17, external: 62, total: 79, grade: "B", result: "Pass" },
-                    { code: "MATH", name: "Mathematics", internal: 20, external: 78, total: 98, grade: "A", result: "Pass" },
-                    { code: "CS", name: "Computer Science", internal: 18, external: 72, total: 90, grade: "A", result: "Pass" },
-                    { code: "ENG", name: "English", internal: 19, external: 71, total: 90, grade: "A", result: "Pass" },
-                    { code: "KAN", name: "Kannada", internal: 17, external: 65, total: 82, grade: "A", result: "Pass" }
-                ]
-            }
-        };
+      
 
         // Function to fetch data from Google Sheets
         async function fetchFromGoogleSheets(rollNumber, puLevel, course, examType) {
