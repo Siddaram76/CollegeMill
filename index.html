@@ -1,690 +1,143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PU College - Result Portal</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        .background-animation {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            z-index: -1;
-        }
-
-        .floating-shapes {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        .shape {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .shape:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
-        .shape:nth-child(2) { width: 120px; height: 120px; top: 60%; left: 80%; animation-delay: 2s; }
-        .shape:nth-child(3) { width: 60px; height: 60px; top: 80%; left: 30%; animation-delay: 4s; }
-        .shape:nth-child(4) { width: 100px; height: 100px; top: 30%; left: 70%; animation-delay: 1s; }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            color: white;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .header p {
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 1.1em;
-        }
-
-        .search-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .search-form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            align-items: end;
-        }
-
-        .form-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e1e5e9;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .search-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            min-width: 120px;
-        }
-
-        .search-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .search-btn:active {
-            transform: translateY(0);
-        }
-
-        .search-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .result-section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            display: none;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .result-header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .result-header h2 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        .student-info {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .info-card {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 4px solid #667eea;
-            transition: transform 0.3s ease;
-        }
-
-        .info-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .info-card h3 {
-            color: #667eea;
-            margin-bottom: 8px;
-            font-size: 0.9em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-card p {
-            color: #333;
-            font-size: 1.1em;
-            font-weight: 600;
-        }
-
-        .results-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .results-table th, .results-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #f0f0f0;
-        }
-
-        .results-table th {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .results-table tr:hover {
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        .grade {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
-
-        .grade.A { background: #d4edda; color: #155724; }
-        .grade.B { background: #cce5ff; color: #004085; }
-        .grade.C { background: #fff3cd; color: #856404; }
-        .grade.D { background: #f8d7da; color: #721c24; }
-        .grade.F { background: #f5c6cb; color: #721c24; }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: 1px solid #f5c6cb;
-            display: none;
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            border: 1px solid #c3e6cb;
-            display: none;
-        }
-
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .summary-card h3 {
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .summary-card p {
-            font-size: 1.8em;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .search-form {
-                flex-direction: column;
-            }
-            
-            .form-group {
-                min-width: 100%;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .student-info {
-                grid-template-columns: 1fr;
-            }
-
-            .results-table {
-                font-size: 14px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Subject Result</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #dbeafe, #f0f9ff);
+      padding: 30px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #1d4ed8;
+    }
+    select, input, button {
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #1d4ed8;
+      color: white;
+      cursor: pointer;
+    }
+    .result-card {
+      margin-top: 20px;
+      background-color: #e0f2fe;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: left;
+    }
+  </style>
 </head>
 <body>
-    <div class="background-animation">
-        <div class="floating-shapes">
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-            <div class="shape"></div>
-        </div>
-    </div>
+  <div class="container">
+    <h1>Check Your Subject Result</h1>
 
-    <div class="container">
-        <div class="header">
-            <h1>PU College Result Portal</h1>
-            <p>Check your PU1 & PU2 examination results instantly</p>
-        </div>
+    <select id="year">
+      <option value="">Select Year</option>
+      <option value="1">1st Year</option>
+      <option value="2">2nd Year</option>
+    </select><br>
 
-        <div class="search-section">
-            <div class="search-form">
-                <div class="form-group">
-                    <label for="rollNumber">Roll Number</label>
-                    <input type="text" id="rollNumber" placeholder="Enter your roll number" required>
-                </div>
-                <div class="form-group">
-                    <label for="puLevel">PU Level</label>
-                    <select id="puLevel" required>
-                        <option value="">Select PU Level</option>
-                        <option value="PU1">PU1</option>
-                        <option value="PU2">PU2</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="course">Course</label>
-                    <select id="course" required>
-                        <option value="">Select Course</option>
-                        <option value="Science">Science</option>
-                        <option value="Commerce">Commerce</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="examType">Exam Type</label>
-                    <select id="examType" required>
-                        <option value="">Select Exam</option>
-                        <option value="midterm">Mid-Term</option>
-                        <option value="final">Final Exam</option>
-                    </select>
-                </div>
-                <button class="search-btn" onclick="searchResult()" id="searchBtn">Get Result</button>
-            </div>
-        </div>
+    <select id="subject">
+      <option value="">Select Subject</option>
+      <option value="Economics">Economics</option>
+      <option value="Business">Business</option>
+      <option value="Accountancy">Accountancy</option>
+      <option value="Maths">Maths</option>
+    </select><br>
 
-        <div class="loading" id="loading">
-            <div class="loading-spinner"></div>
-            <p>Fetching your result...</p>
-        </div>
+    <input type="text" id="rollNumber" placeholder="Enter Roll Number"><br>
 
-        <div class="error-message" id="errorMessage"></div>
-        <div class="success-message" id="successMessage"></div>
+    <button onclick="getResult()">Search Result</button>
 
-        <div class="result-section" id="resultSection">
-            <div class="result-header">
-                <h2>Examination Result</h2>
-                <p>Academic Year 2024-25</p>
-            </div>
+    <div class="loading-container" style="display:none; margin-top:10px;">Loading...</div>
+    <div id="result"></div>
+  </div>
 
-            <div class="student-info" id="studentInfo">
-                <!-- Student information will be populated here -->
-            </div>
+  <script>
+    const sheetId = '1QT6ipufgUfd-nLr5tm5yro7FEhuiHg-jf_0alnJKI8c';
+    const apiKey = 'AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk';
 
-            <div class="summary-cards" id="summaryCards">
-                <!-- Summary cards will be populated here -->
-            </div>
+    async function getResult() {
+      const year = document.getElementById("year").value;
+      const subject = document.getElementById("subject").value;
+      const roll = document.getElementById("rollNumber").value.trim();
+      const resultDiv = document.getElementById("result");
+      const loadingDiv = document.querySelector(".loading-container");
 
-            <table class="results-table" id="resultsTable">
-                <thead>
-                    <tr>
-                        <th>Subject Code</th>
-                        <th>Subject Name</th>
-                        <th>Internal Marks</th>
-                        <th>External Marks</th>
-                        <th>Total Marks</th>
-                        <th>Grade</th>
-                        <th>Result</th>
-                    </tr>
-                </thead>
-                <tbody id="resultsTableBody">
-                    <!-- Results will be populated here -->
-                </tbody>
-            </table>
-        </div>
-    </div>
+      const sheetName = `${year}_${subject}`;
 
-    <script>
-        // Google Sheets API configuration
-        const GOOGLE_SHEETS_API_KEY = 'AIzaSyDF9StQ_lOLDxPEzvj7c2I9oJSD0yE5-tk';
-        const SPREADSHEET_ID = '1hpA0y0SLQwBrGYOBXrZAqZFhzzl-MpuQerbme1Isa4M';
-        const SHEET_NAME = 'Results';
+      resultDiv.style.display = "none";
+      loadingDiv.style.display = "block";
 
-      
+      if (!year || !subject || !roll) {
+        loadingDiv.style.display = "none";
+        resultDiv.innerHTML = "<p>Please select year, subject, and enter your roll number.</p>";
+        resultDiv.style.display = "block";
+        return;
+      }
 
-        // Function to fetch data from Google Sheets
-        async function fetchFromGoogleSheets(rollNumber, puLevel, course, examType) {
-            try {
-                // Uncomment the following lines when using real Google Sheets API
-                /*
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}!A:Z?key=${GOOGLE_SHEETS_API_KEY}`;
-                
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                const rows = data.values;
-                
-                if (!rows || rows.length === 0) {
-                    throw new Error('No data found in sheet');
-                }
-                
-                // Find matching student
-                const student = rows.find(row => 
-                    row[0] === rollNumber && 
-                    row[1] === puLevel && 
-                    row[2] === course &&
-                    row[4] === examType
-                );
-                
-                if (!student) {
-                    throw new Error('No result found for the given criteria');
-                }
-                
-                return processGoogleSheetsData(student);
-                */
+      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
 
-                // Demo: simulate API delay
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
-                // Return sample data for demo
-                const student = sampleData[rollNumber];
-                if (!student || student.puLevel !== puLevel || student.course !== course || student.examType !== examType) {
-                    throw new Error('No result found for the given criteria');
-                }
-                return student;
-                
-            } catch (error) {
-                throw new Error('Failed to fetch result: ' + error.message);
-            }
+      try {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data.values) throw new Error("No data found");
+
+        const rows = data.values;
+        const headers = rows[0];
+
+        const rollIndex = headers.indexOf("ROLL_NO");
+        const nameIndex = headers.indexOf("Student Name");
+        const fatherIndex = headers.indexOf("Father Name");
+        const marksIndex = headers.indexOf("MARKS");
+        const gradeIndex = headers.indexOf("GRADE");
+
+        const student = rows.find((row, i) => i > 0 && row[rollIndex] === roll);
+
+        loadingDiv.style.display = "none";
+
+        if (student) {
+          resultDiv.innerHTML = `
+            <div class="result-card">
+              <h3>Name: ${student[nameIndex]}</h3>
+              <p>Father Name: ${student[fatherIndex]}</p>
+              <p>Subject: ${subject}</p>
+              <p>Marks: ${student[marksIndex]}</p>
+              <p>Grade: ${student[gradeIndex]}</p>
+            </div>`;
+        } else {
+          resultDiv.innerHTML = `<p>No result found for Roll Number: ${roll}</p>`;
         }
 
-        // Function to process Google Sheets data into required format
-        function processGoogleSheetsData(row) {
-            // This function will process the raw Google Sheets data
-            // Adjust based on your actual sheet structure
-            return {
-                rollNumber: row[0],
-                puLevel: row[1],
-                course: row[2],
-                combination: row[3],
-                examType: row[4],
-                name: row[5],
-                section: row[6],
-                subjects: [
-                    // Extract subjects from remaining columns
-                    // Implementation depends on your sheet structure
-                ]
-            };
-        }
+        resultDiv.style.display = "block";
 
-        // Main search function
-        async function searchResult() {
-            const rollNumber = document.getElementById('rollNumber').value.trim();
-            const puLevel = document.getElementById('puLevel').value;
-            const course = document.getElementById('course').value;
-            const examType = document.getElementById('examType').value;
-
-            // Validation
-            if (!rollNumber || !puLevel || !course || !examType) {
-                showError('Please fill in all required fields');
-                return;
-            }
-
-            // Show loading
-            document.getElementById('loading').style.display = 'block';
-            document.getElementById('resultSection').style.display = 'none';
-            document.getElementById('searchBtn').disabled = true;
-            hideMessages();
-
-            try {
-                const studentData = await fetchFromGoogleSheets(rollNumber, puLevel, course, examType);
-                displayResult(studentData);
-                showSuccess('Result fetched successfully!');
-            } catch (error) {
-                showError(error.message);
-            } finally {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('searchBtn').disabled = false;
-            }
-        }
-
-        // Display the result
-        function displayResult(studentData) {
-            // Populate student information
-            const studentInfo = document.getElementById('studentInfo');
-            studentInfo.innerHTML = `
-                <div class="info-card">
-                    <h3>Student Name</h3>
-                    <p>${studentData.name}</p>
-                </div>
-                <div class="info-card">
-                    <h3>Roll Number</h3>
-                    <p>${studentData.rollNumber}</p>
-                </div>
-                <div class="info-card">
-                    <h3>Course</h3>
-                    <p>${studentData.course}</p>
-                </div>
-                <div class="info-card">
-                    <h3>Combination</h3>
-                    <p>${studentData.combination}</p>
-                </div>
-                <div class="info-card">
-                    <h3>PU Level</h3>
-                    <p>${studentData.puLevel}</p>
-                </div>
-                <div class="info-card">
-                    <h3>Section</h3>
-                    <p>${studentData.section}</p>
-                </div>
-                <div class="info-card">
-                    <h3>Exam Type</h3>
-                    <p>${studentData.examType.charAt(0).toUpperCase() + studentData.examType.slice(1)} Exam</p>
-                </div>
-            `;
-
-            // Calculate summary
-            const totalMarks = studentData.subjects.reduce((sum, subject) => sum + subject.total, 0);
-            const maxMarks = studentData.subjects.length * 100;
-            const percentage = ((totalMarks / maxMarks) * 100).toFixed(2);
-            const passSubjects = studentData.subjects.filter(s => s.result === 'Pass').length;
-            const failSubjects = studentData.subjects.filter(s => s.result === 'Fail').length;
-
-            // Populate summary cards
-            const summaryCards = document.getElementById('summaryCards');
-            summaryCards.innerHTML = `
-                <div class="summary-card">
-                    <h3>Total Marks</h3>
-                    <p>${totalMarks}/${maxMarks}</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Percentage</h3>
-                    <p>${percentage}%</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Pass Subjects</h3>
-                    <p>${passSubjects}</p>
-                </div>
-                <div class="summary-card">
-                    <h3>Overall Result</h3>
-                    <p>${failSubjects === 0 ? 'PASS' : 'FAIL'}</p>
-                </div>
-            `;
-
-            // Populate results table
-            const tableBody = document.getElementById('resultsTableBody');
-            tableBody.innerHTML = '';
-            
-            studentData.subjects.forEach(subject => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${subject.code}</td>
-                    <td>${subject.name}</td>
-                    <td>${subject.internal}</td>
-                    <td>${subject.external}</td>
-                    <td><strong>${subject.total}</strong></td>
-                    <td><span class="grade ${subject.grade}">${subject.grade}</span></td>
-                    <td><strong style="color: ${subject.result === 'Pass' ? 'green' : 'red'}">${subject.result}</strong></td>
-                `;
-                tableBody.appendChild(row);
-            });
-
-            // Show result section
-            document.getElementById('resultSection').style.display = 'block';
-        }
-
-        // Utility functions
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-        }
-
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                successDiv.style.display = 'none';
-            }, 3000);
-        }
-
-        function hideMessages() {
-            document.getElementById('errorMessage').style.display = 'none';
-            document.getElementById('successMessage').style.display = 'none';
-        }
-
-        // Event listeners
-        document.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                searchResult();
-            }
-        });
-
-        // Clear form function
-        function clearForm() {
-            document.getElementById('rollNumber').value = '';
-            document.getElementById('puLevel').value = '';
-            document.getElementById('course').value = '';
-            document.getElementById('examType').value = '';
-            document.getElementById('resultSection').style.display = 'none';
-            hideMessages();
-        }
-
-        // Print result function
-        function printResult() {
-            window.print();
-        }
-
-        // Add print styles
-        const printStyles = `
-            @media print {
-                body { background: white !important; }
-                .header, .search-section, .loading, .error-message, .success-message { display: none !important; }
-                .result-section { display: block !important; background: white !important; }
-                .floating-shapes { display: none !important; }
-            }
-        `;
-        
-        const styleSheet = document.createElement('style');
-        styleSheet.textContent = printStyles;
-        document.head.appendChild(styleSheet);
-    </script>
+      } catch (err) {
+        console.error(err);
+        loadingDiv.style.display = "none";
+        resultDiv.innerHTML = "<p>Error fetching data.</p>";
+        resultDiv.style.display = "block";
+      }
+    }
+  </script>
 </body>
 </html>
